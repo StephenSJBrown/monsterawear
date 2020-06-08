@@ -15,7 +15,7 @@ class Stock(models.Model):
     xl_quantity = models.PositiveIntegerField(null=True)
 
     def __str__(self):
-        return self.item_name
+        return self.item_name + ", " + self.colour
 
 class Order(models.Model):
     full_name = models.CharField(max_length=200)
@@ -26,7 +26,7 @@ class Order(models.Model):
     delivery_type = models.CharField(max_length=200)
     delivery_amount = models.DecimalField(max_digits=3, decimal_places=2)
     total_order_value = models.CharField(max_length=200)
-    order_date = models.DateTimeField(default=timezone.now())
+    order_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return self.full_name
