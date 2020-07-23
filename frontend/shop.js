@@ -18,7 +18,7 @@
 //   },
 // });
 
-if (sessionStorage.getItem("item total")) {
+if (parseInt((sessionStorage.getItem("item total"))) > 0) {
   $(`#cart-counter`)[0].innerText = sessionStorage.getItem("item total")
   $(`#cart-counter`).show()
 }
@@ -53,27 +53,69 @@ const changeValue = (e) => {
   quantity.innerText = e.target.value;
 };
 
+const checkMatch = () => {
+  // console.log("checking for match")
+  let result = false
+  let existingOrder = JSON.parse(sessionStorage.getItem('order'))
+  const urlParams = new URLSearchParams(window.location.search)
+  let id = urlParams.get("item")
+  let size = $(`#size-selector`)[0].value
+  let i = 0
+  // console.log(existingOrder)
+  if (existingOrder) {
+  for (item of existingOrder) {
+    // console.log("looping through order items")
+    // console.log(item)
+    if (existingOrder && item.id == id && item.size == size) {
+      result = true
+      // console.log(`one of the items, ${i} matches`)
+      return [result, i]
+    }
+    i++
+  }
+  }
+  return result
+}
+
 const addToCart = () => {
+  // add and show cart number
   let cartCount = $(`#cart-counter`)[0]
   let quantity = $(`#quantity-value`)[0].innerText
   cartCount.innerHTML = parseInt(quantity, 10) + parseInt(cartCount.innerHTML)
   sessionStorage.setItem("item total", parseInt(cartCount.innerText))
   $(`#cart-counter`).show()
-  const urlParams = new URLSearchParams(window.location.search)
-  let id = urlParams.get("item")
-  let name = $(`#item-name`)[0].innerText
-  let colour = $(`#item-colour`)[0].innerText
-  let size = $(`#size-selector`)[0].value
-  let price = $(`#item-price`)[0].innerHTML
-  let addition = {id, name, colour, price, size, quantity}
-  let existingOrder = JSON.parse(sessionStorage.getItem('order'))
-  if (existingOrder && existingOrder.id == id ) {
-    console.log("we got a match")
-    existingOrder.quantity = parseInt(existingOrder.quantity) + parseInt(quantity)
-    addition = existingOrder
+  // check if there's a match within our existing order
+  const results = checkMatch()
+  // console.log(`it is ${results[0]} there is a match. It is at ${results[1]}`)
+  // if there is, just add current quantity to that item
+  if (results[0]) {
+    // console.log(`we got a match @ ${results[1]}`)
+    order = JSON.parse(sessionStorage.getItem("order"))
+    // console.log(`quantity is ${order[results[1]].quantity}`)
+    const oldQuantity = parseInt(JSON.parse(sessionStorage.getItem("order"))[results[1]].quantity)
+    const newQuantity = oldQuantity + parseInt(quantity)
+    // console.log(oldQuantity, quantity, newQuantity)
+    order[results[1]].quantity = newQuantity
   }
-  sessionStorage.setItem("order", JSON.stringify(addition))
-  console.log(sessionStorage.getItem("order"))
+  // if not, then create a new item and add it to the existing items
+  else {
+    // console.log(`no match`)
+    // create new object
+    const urlParams = new URLSearchParams(window.location.search)
+    let id = urlParams.get("item")
+    let size = $(`#size-selector`)[0].value
+    let name = $(`#item-name`)[0].innerText
+    let colour = $(`#item-colour`)[0].innerText
+    let price = $(`#item-price`)[0].innerHTML
+    let addition = {id, name, colour, price, size, quantity}
+    order = []
+    if (sessionStorage.getItem("order")) {
+      order = JSON.parse(sessionStorage.getItem("order"))
+    }
+    order.push(addition)
+  }
+  sessionStorage.setItem("order", JSON.stringify(order))
+  // console.log(sessionStorage.getItem("order"))
 };
 
 let sizeSelector = $(`#size-selector`)[0];

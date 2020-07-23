@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://use.typekit.net/bvu7cvg.css">
     <link rel='stylesheet' type="text/css" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
     <title>MonsteraWear | Cart</title>
 </head>
 
@@ -36,28 +37,17 @@
     <div class="page">
         <h2>Cart</h2>
         <button>Back to Shop</button>
-        <div id="populated-cart">
-            <div class="cart-item-small">
-                <img src="#" class="item-m" alt="#"/>
-                <div>
-                    <p>Monstera Tee White</p>
-                    <div class="separator">
-                        <p>Large</p>
-                        <p>1</p>
-                        <p>£20.00</p>
-                    </div>
-                    <button>Remove</button>
-                </div>
-            </div>
+        <div id="populated-cart" hidden>
         </div>
         <div id="empty-cart">
             <p>Oh, looks like you don’t have anything in your cart yet!</p><br/>
             <img src="static/empty.png" />
         </div>
-        <a href="delivery.html"><button class="primary">Add Delivery</button></a>
+        <a href="delivery.html" id="delivery" hidden><button class="primary">Add Delivery</button></a>
     </div>
     <div class="remainder" id="cart-remainder"></div>
     <footer><a href="https://www.instagram.com/monsterawear">Footer</a></footer>
+    <script src="cart.js"></script>
 </body>
 
 </html>
