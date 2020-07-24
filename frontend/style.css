@@ -41,10 +41,21 @@ button {
   padding: 0 1.5em;
   background-color: #023a09;
   height: 2em;
+  cursor: pointer;
 }
 
 button:focus {
   outline: none;
+}
+
+button:hover {
+  opacity: 50%;
+}
+
+button:disabled {
+  background-color: #F4F4F4;
+  color: #2c2c2c;
+  cursor: default;
 }
 
 @media screen and (min-width: 480px) {
@@ -253,7 +264,28 @@ footer {
   height: calc(40vh - 48px);
 }
 
+#cost-container {
+  display: flex;
+}
+
+/* Cart Specific Formatting */
+
+#total-container {
+  display: flex;
+}
+
+#total-value {
+  margin-left: 1em
+}
+
 /* Delivery Specific Formatting */
+
+label {
+  font-family: mr-eaves-modern, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 1.5em;
+}
 
 .input,
 textarea {
@@ -270,13 +302,12 @@ textarea {
   margin-bottom: 1em;
 }
 
-#address-input {
-  resize: none;
-  height: 7.5em;
-}
-
 .input:last-child {
   margin-bottom: 0;
+}
+
+.input:focus {
+  outline:  #0e9915 auto 1px;
 }
 
 .grey-input {
@@ -284,12 +315,6 @@ textarea {
   padding: 0 0.5em;
   margin-bottom: 1em;
   padding-bottom: 1em;
-}
-
-#half-container {
-  margin-top: 1em;
-  display: flex;
-  flex-direction: row;
 }
 
 .flex-half {
@@ -310,11 +335,15 @@ textarea {
   padding-bottom: 1em;
 }
 
-label {
-  font-family: mr-eaves-modern, sans-serif;
-  font-style: normal;
-  font-weight: 300;
-  font-size: 1.5em;
+#address-input {
+  resize: none;
+  height: 7.5em;
+}
+
+#half-container {
+  margin-top: 1em;
+  display: flex;
+  flex-direction: row;
 }
 
 #sum-container {

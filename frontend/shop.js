@@ -18,12 +18,14 @@
 //   },
 // });
 
-if (parseInt((sessionStorage.getItem("item total"))) > 0) {
-  $(`#cart-counter`)[0].innerText = sessionStorage.getItem("item total")
+console.log(sessionStorage)
+
+if (parseInt((sessionStorage.getItem("item count"))) > 0) {
+  $(`#cart-counter`)[0].innerText = sessionStorage.getItem("item count")
   $(`#cart-counter`).show()
 }
 else {
-  sessionStorage.setItem("item total", 0)
+  sessionStorage.setItem("item count", 0)
 }
 
 $(`.range-selector`).each((i, option) => {
@@ -82,7 +84,7 @@ const addToCart = () => {
   let cartCount = $(`#cart-counter`)[0]
   let quantity = $(`#quantity-value`)[0].innerText
   cartCount.innerHTML = parseInt(quantity, 10) + parseInt(cartCount.innerHTML)
-  sessionStorage.setItem("item total", parseInt(cartCount.innerText))
+  sessionStorage.setItem("item count", parseInt(cartCount.innerText))
   $(`#cart-counter`).show()
   // check if there's a match within our existing order
   const results = checkMatch()
