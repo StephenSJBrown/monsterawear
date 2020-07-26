@@ -3,7 +3,7 @@ let itemTotal = parseInt(sessionStorage.getItem("item total"));
 
 console.log(sessionStorage);
 
-if (order.length == 0) {
+if (!order || order.length == 0) {
   window.location.href = "index.html";
 }
 
