@@ -64,7 +64,10 @@
                             <option class="option" id="x-large" value="x-large">X-Large</option>
                         </select>
                         <div id="quantity-section">
+                            <button id="decrease" class="increment">-</button>
                             <p id="quantity-value">1</p>
+                            <input id="quantity-number" type="number" min="1" max="9" value="1" disabled/>
+                            <button id="increase" class="increment">+</button>
                             <input type="range" id="small-quantity-range" class="range-selector" min="1" max="5"
                                 value="1"></input>
                             <input type="range" id="medium-quantity-range" class="range-selector" min="1" max="9"
@@ -73,6 +76,7 @@
                                 value="1" hidden></input>
                             <input type="range" id="x-large-quantity-range" class="range-selector" min="1" max="0"
                                 value="1" hidden></input>
+                            
                         </div>
                     </div>
                     <div class="order">

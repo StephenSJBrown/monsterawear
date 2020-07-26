@@ -50,6 +50,20 @@ const showSize = (e) => {
   }
 };
 
+const increase = () => {
+  let quantity = $(`#quantity-number`)[0];
+  if (parseInt(quantity.value) < parseInt(quantity.max)) {
+    quantity.value = parseInt(quantity.value) + 1
+  }
+}
+const decrease = () => {
+  let quantity = $(`#quantity-number`)[0];
+  if (parseInt(quantity.value) > 1) {
+    quantity.value = parseInt(quantity.value) - 1
+  }
+}
+
+
 const changeValue = (e) => {
   let quantity = $(`#quantity-value`)[0];
   quantity.innerText = e.target.value;
@@ -129,3 +143,6 @@ rangeSelectors.each((i, selector) => {
 });
 
 $("#add-to-cart")[0].addEventListener("click", addToCart);
+
+$("#increase")[0].addEventListener("click", increase)
+$("#decrease")[0].addEventListener("click", decrease)
