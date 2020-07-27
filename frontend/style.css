@@ -300,6 +300,16 @@ footer {
   display: flex;
 }
 
+#quantity-number:disabled {
+  background-color: #fff;
+  border: none;
+  font-family: mr-eaves-modern, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 1.5em;
+  color: #2c2c2c;
+}
+
 /* Cart Specific Formatting */
 
 #total-container {
