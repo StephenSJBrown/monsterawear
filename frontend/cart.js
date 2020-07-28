@@ -24,6 +24,7 @@ const removeFromCart = (e) => {
     $(`#delivery`).hide();
   }
   updateTotal();
+  // omg add numbers back to the session? Fxake
 };
 
 if (order && order.length > 0) {

@@ -1,9 +1,30 @@
-let small = 4;
-let medium = 8;
+let small = 0;
+let medium = 3;
 let large = 5;
-let xl = 0;
+let xl = 1;
+// let small = 0;
+// let medium = 0;
+// let large = 0;
+// let xl = 0;
 
-// HIT THAT API
+if (small === 0) {
+  $(`#small`).attr("disabled", true);
+  $(`#small`)[0].innerText += " SOLD OUT"
+}
+if (medium === 0) {
+  $(`#medium`).attr("disabled", true);
+  $(`#medium`)[0].innerText += " SOLD OUT"
+}
+if (large === 0) {
+  $(`#large`).attr("disabled", true);
+  $(`#large`)[0].innerText += " SOLD OUT"
+}
+if (xl === 0) {
+  $(`#x-large`).attr("disabled", true);
+  $(`#x-large`)[0].innerText += " SOLD OUT"
+}
+
+// HIT THAT API (ONLY ONCE PER SESSION PER ITEM)
 // $.ajax({
 //   url: "http://localhost:8000/api/1",
 //   method: "GET",
@@ -12,10 +33,10 @@ let xl = 0;
 //     $(`#item-colour`)[0].innerText = item.colour;
 //     $(`#item-price`)[0].innerText = `£${item.value}`;
 //     $(`#item-description`)[0].innerText = item.description;
-//     $(`#small-quantity-range`)[0].max = item.s_quantity;
-//     $(`#medium-quantity-range`)[0].max = item.m_quantity;
-//     $(`#large-quantity-range`)[0].max = item.l_quantity;
-//     $(`#x-large-quantity-range`)[0].max = item.xl_quantity;
+//     small = item.s_quantity;
+//     medium = item.m_quantity;
+//     large = item.l_quantity;
+//     xl = item.xl_quantity;
 //     console.log(`got data`);
 //   },
 //   error: function (error) {
@@ -25,6 +46,34 @@ let xl = 0;
 
 console.log(sessionStorage);
 
+const initSize = () => {
+  if (small === 0 && medium === 0 && large === 0 && xl === 0) {
+    $(`#sold-out`).show();
+    $(`#quantity-section`).hide();
+    $(`#size-selector`).hide();
+    $(`#add-to-cart`).hide();
+  } else {
+    console.log("okay so we ain't completely sold out")
+    let e = jQuery.Event("change", { target: { value: "small" } });
+    if (small === 0) {
+      $(`#size-selector`)[0].selectedIndex = 1;
+      e = jQuery.Event("change", { target: { value: "medium" } });
+      if (medium === 0) {
+        console.log("got no mediums")
+        $(`#size-selector`)[0].selectedIndex = 2;
+        e = jQuery.Event("change", { target: { value: "large" } });
+        if (large === 0) {
+          console.log("got no larges")
+          $(`#size-selector`)[0].selectedIndex = 3;
+          e = jQuery.Event("change", { target: { value: "x-large" } });
+        }
+      }
+    }
+    showSize(e)
+  }
+};
+
+
 if (parseInt(sessionStorage.getItem("item count")) > 0) {
   $(`#cart-counter`)[0].innerText = sessionStorage.getItem("item count");
   $(`#cart-counter`).show();
@@ -32,14 +81,8 @@ if (parseInt(sessionStorage.getItem("item count")) > 0) {
   sessionStorage.setItem("item count", 0);
 }
 
-$(`.range-selector`).each((i, option) => {
-  if (option.max === "0") {
-    option.type = "hidden";
-    option.value = "Sold Out";
-  }
-});
-
 const showSize = (e) => {
+  console.log("we hit showSize", e);
   switch (e.target.value) {
     case "small":
       console.log("change that bitch to small");
@@ -58,44 +101,39 @@ const showSize = (e) => {
       $("#quantity-number")[0].max = xl;
       break;
   }
-  $("#quantity-number")[0].value = 1;
-  let allSizes = $(`.range-selector`);
-  allSizes.hide();
-  let shownItem = $(`#${e.target.value}-quantity-range`);
-  shownItem.show();
-  let quantity = $(`#quantity-value`)[0];
-  quantity.innerHTML = shownItem[0].value;
-  if (shownItem[0].max === "0") {
-    $(`#add-to-cart`).hide();
+  if ($(`#quantity-number`)[0].max == 1) {
+    $("#quantity-number")[0].value = 1;
+    $(`#last-one`).show();
+    $(`#increase`).attr("disabled", true);
+    $(`#decrease`).attr("disabled", true);
   } else {
-    $(`#add-to-cart`).show();
+    $("#quantity-number")[0].value = 1;
+    $(`#last-one`).hide();
+    $(`#increase`).attr("disabled", false);
+    $(`#decrease`).attr("disabled", true);
   }
 };
 
-const increase = (e) => {
+const increase = () => {
   let quantity = $(`#quantity-number`)[0];
   if (parseInt(quantity.value) < parseInt(quantity.max)) {
     quantity.value = parseInt(quantity.value) + 1;
   }
   if (parseInt(quantity.value) === parseInt(quantity.max)) {
-    $(`#increase`)[0].style.visibility = "hidden";
+    $(`#increase`).attr("disabled", true);
   }
-  $(`#decrease`)[0].style.visibility = "initial"
+  $(`#decrease`).attr("disabled", false);
 };
+
 const decrease = () => {
   let quantity = $(`#quantity-number`)[0];
   if (parseInt(quantity.value) > 1) {
     quantity.value = parseInt(quantity.value) - 1;
   }
   if (parseInt(quantity.value) === parseInt(quantity.min)) {
-    $(`#decrease`)[0].style.visibility = "hidden";
+    $(`#decrease`).attr("disabled", true);
   }
-  $(`#increase`)[0].style.visibility = "initial"
-};
-
-const changeValue = (e) => {
-  let quantity = $(`#quantity-value`)[0];
-  quantity.innerText = e.target.value;
+  $(`#increase`).attr("disabled", false);
 };
 
 const checkMatch = () => {
@@ -125,7 +163,7 @@ const checkMatch = () => {
 const addToCart = () => {
   // add and show cart number
   let cartCount = $(`#cart-counter`)[0];
-  let quantity = $(`#quantity-value`)[0].innerText;
+  let quantity = $(`#quantity-number`)[0].value;
   cartCount.innerHTML = parseInt(quantity, 10) + parseInt(cartCount.innerHTML);
   sessionStorage.setItem("item count", parseInt(cartCount.innerText));
   $(`#cart-counter`).show();
@@ -165,15 +203,11 @@ const addToCart = () => {
   // console.log(sessionStorage.getItem("order"))
 };
 
-let sizeSelector = $(`#size-selector`)[0];
-sizeSelector.addEventListener("change", showSize);
-
-let rangeSelectors = $(`.range-selector`);
-rangeSelectors.each((i, selector) => {
-  selector.addEventListener("click", changeValue);
-});
+$(`#size-selector`)[0].addEventListener("change", showSize);
 
 $("#add-to-cart")[0].addEventListener("click", addToCart);
 
 $("#increase")[0].addEventListener("click", increase);
 $("#decrease")[0].addEventListener("click", decrease);
+
+initSize()
