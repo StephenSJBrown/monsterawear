@@ -1,6 +1,6 @@
 let order = JSON.parse(sessionStorage.getItem("order"));
 
-console.log(sessionStorage)
+console.log(sessionStorage);
 
 const updateTotal = () => {
   let total = 0.0;
@@ -17,14 +17,14 @@ const removeFromCart = (e) => {
   let total = parseInt(sessionStorage.getItem("item count"));
   total -= parseInt(order[index].quantity);
   sessionStorage.setItem("item count", total);
-  order.splice(index);
+  order.splice(index, 1);
   sessionStorage.setItem("order", JSON.stringify(order));
   if (order.length == 0) {
     $(`#empty-cart`).show();
     $(`#delivery`).hide();
   }
   updateTotal();
-  // omg add numbers back to the session? Fxake
+  updateCartCounter()
 };
 
 if (order && order.length > 0) {
@@ -55,3 +55,15 @@ if (order && order.length > 0) {
   });
   updateTotal();
 }
+
+const updateCartCounter = () => {
+  if (parseInt(sessionStorage.getItem("item count")) > 0) {
+    $(`#cart-counter`)[0].innerText = sessionStorage.getItem("item count");
+    $(`#cart-counter`).show();
+  } else {
+    sessionStorage.setItem("item count", 0);
+    $(`#cart-counter`).hide();
+  }
+};
+
+updateCartCounter()

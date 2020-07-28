@@ -1,30 +1,9 @@
 let small = 0;
 let medium = 3;
-let large = 5;
+let large = 1;
 let xl = 1;
-// let small = 0;
-// let medium = 0;
-// let large = 0;
-// let xl = 0;
 
-if (small === 0) {
-  $(`#small`).attr("disabled", true);
-  $(`#small`)[0].innerText += " SOLD OUT"
-}
-if (medium === 0) {
-  $(`#medium`).attr("disabled", true);
-  $(`#medium`)[0].innerText += " SOLD OUT"
-}
-if (large === 0) {
-  $(`#large`).attr("disabled", true);
-  $(`#large`)[0].innerText += " SOLD OUT"
-}
-if (xl === 0) {
-  $(`#x-large`).attr("disabled", true);
-  $(`#x-large`)[0].innerText += " SOLD OUT"
-}
-
-// HIT THAT API (ONLY ONCE PER SESSION PER ITEM)
+// HIT THAT API
 // $.ajax({
 //   url: "http://localhost:8000/api/1",
 //   method: "GET",
@@ -46,33 +25,100 @@ if (xl === 0) {
 
 console.log(sessionStorage);
 
+const adjustForCart = () => {
+  let existingOrder = JSON.parse(sessionStorage.getItem("order"));
+  if (existingOrder) {
+  const urlParams = new URLSearchParams(window.location.search);
+  let id = urlParams.get("item");
+    for (item of existingOrder) {
+      if (item.id == id) {
+        switch (item.size) {
+          case "small":
+            small -= item.quantity;
+            break;
+          case "medium":
+            medium -= item.quantity;
+            break;
+          case "large":
+            large -= item.quantity;
+            break;
+          case "x-large":
+            xl -= item.quantity;
+            break;
+        }
+      }
+    }
+  }
+};
+
+const checkMatch = () => {
+  // console.log("checking for match")
+  let result = false;
+  let existingOrder = JSON.parse(sessionStorage.getItem("order"));
+  const urlParams = new URLSearchParams(window.location.search);
+  let id = urlParams.get("item");
+  let size = $(`#size-selector`)[0].value;
+  let i = 0;
+  // console.log(existingOrder)
+  if (existingOrder) {
+    for (item of existingOrder) {
+      // console.log("looping through order items")
+      // console.log(item)
+      if (existingOrder && item.id == id && item.size == size) {
+        result = true;
+        // console.log(`one of the items, ${i} matches`)
+        return [result, i];
+      }
+      i++;
+    }
+  }
+  return result;
+};
+
 const initSize = () => {
-  if (small === 0 && medium === 0 && large === 0 && xl === 0) {
+  if (small < 1 && medium < 1 && large < 1 && xl < 1) {
     $(`#sold-out`).show();
+    $(`#last-one`).hide();
     $(`#quantity-section`).hide();
     $(`#size-selector`).hide();
     $(`#add-to-cart`).hide();
   } else {
-    console.log("okay so we ain't completely sold out")
+    console.log("okay so we ain't completely sold out");
+    if (small < 1) {
+      $(`#small`).attr("disabled", true);
+      $(`#small`)[0].innerText = "Small SOLD OUT";
+    }
+    if (medium < 1) {
+      $(`#medium`).attr("disabled", true);
+      $(`#medium`)[0].innerText = "Medium SOLD OUT";
+    }
+    if (large < 1) {
+      $(`#large`).attr("disabled", true);
+      $(`#large`)[0].innerText = "Large SOLD OUT";
+    }
+    if (xl < 1) {
+      $(`#x-large`).attr("disabled", true);
+      $(`#x-large`)[0].innerText = "X-Large SOLD OUT";
+    }
     let e = jQuery.Event("change", { target: { value: "small" } });
-    if (small === 0) {
+    if (small < 1) {
+      console.log("got no smalls");
       $(`#size-selector`)[0].selectedIndex = 1;
       e = jQuery.Event("change", { target: { value: "medium" } });
-      if (medium === 0) {
-        console.log("got no mediums")
+      if (medium < 1) {
+        console.log("got no mediums");
         $(`#size-selector`)[0].selectedIndex = 2;
         e = jQuery.Event("change", { target: { value: "large" } });
-        if (large === 0) {
-          console.log("got no larges")
+        if (large < 1) {
+          console.log("got no larges");
           $(`#size-selector`)[0].selectedIndex = 3;
           e = jQuery.Event("change", { target: { value: "x-large" } });
         }
       }
     }
-    showSize(e)
+    showSize(e);
   }
 };
-
 
 if (parseInt(sessionStorage.getItem("item count")) > 0) {
   $(`#cart-counter`)[0].innerText = sessionStorage.getItem("item count");
@@ -82,22 +128,17 @@ if (parseInt(sessionStorage.getItem("item count")) > 0) {
 }
 
 const showSize = (e) => {
-  console.log("we hit showSize", e);
   switch (e.target.value) {
     case "small":
-      console.log("change that bitch to small");
       $("#quantity-number")[0].max = small;
       break;
     case "medium":
-      console.log("change that bitch to medium");
       $("#quantity-number")[0].max = medium;
       break;
     case "large":
-      console.log("change that bitch to large");
       $("#quantity-number")[0].max = large;
       break;
     case "x-large":
-      console.log("change that bitch to xl");
       $("#quantity-number")[0].max = xl;
       break;
   }
@@ -136,37 +177,27 @@ const decrease = () => {
   $(`#increase`).attr("disabled", false);
 };
 
-const checkMatch = () => {
-  // console.log("checking for match")
-  let result = false;
-  let existingOrder = JSON.parse(sessionStorage.getItem("order"));
-  const urlParams = new URLSearchParams(window.location.search);
-  let id = urlParams.get("item");
-  let size = $(`#size-selector`)[0].value;
-  let i = 0;
-  // console.log(existingOrder)
-  if (existingOrder) {
-    for (item of existingOrder) {
-      // console.log("looping through order items")
-      // console.log(item)
-      if (existingOrder && item.id == id && item.size == size) {
-        result = true;
-        // console.log(`one of the items, ${i} matches`)
-        return [result, i];
-      }
-      i++;
-    }
-  }
-  return result;
-};
-
 const addToCart = () => {
-  // add and show cart number
   let cartCount = $(`#cart-counter`)[0];
   let quantity = $(`#quantity-number`)[0].value;
   cartCount.innerHTML = parseInt(quantity, 10) + parseInt(cartCount.innerHTML);
   sessionStorage.setItem("item count", parseInt(cartCount.innerText));
   $(`#cart-counter`).show();
+  switch ($(`#size-selector`)[0].value) {
+    case "small":
+      small -= quantity;
+      break;
+    case "medium":
+      medium -= quantity;
+      console.log("deducting from medium", medium);
+      break;
+    case "large":
+      large -= quantity;
+      break;
+    case "x-large":
+      xl -= quantity;
+      break;
+  }
   // check if there's a match within our existing order
   const results = checkMatch();
   // console.log(`it is ${results[0]} there is a match. It is at ${results[1]}`)
@@ -201,6 +232,7 @@ const addToCart = () => {
   }
   sessionStorage.setItem("order", JSON.stringify(order));
   // console.log(sessionStorage.getItem("order"))
+  initSize();
 };
 
 $(`#size-selector`)[0].addEventListener("change", showSize);
@@ -210,4 +242,5 @@ $("#add-to-cart")[0].addEventListener("click", addToCart);
 $("#increase")[0].addEventListener("click", increase);
 $("#decrease")[0].addEventListener("click", decrease);
 
-initSize()
+adjustForCart();
+initSize();
