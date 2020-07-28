@@ -63,20 +63,16 @@
                             <option class="option" id="large" value="large">Large</option>
                             <option class="option" id="x-large" value="x-large">X-Large</option>
                         </select>
+                        <p id="last-one">Last one</p>
+                        <p id="sold-out">All sizes sold out (or in your cart)</p>
                         <div id="quantity-section">
-                            <p id="quantity-value">1</p>
-                            <input type="range" id="small-quantity-range" class="range-selector" min="1" max="5"
-                                value="1"></input>
-                            <input type="range" id="medium-quantity-range" class="range-selector" min="1" max="9"
-                                value="1" hidden></input>
-                            <input type="range" id="large-quantity-range" class="range-selector" min="1" max="6"
-                                value="1" hidden></input>
-                            <input type="range" id="x-large-quantity-range" class="range-selector" min="1" max="0"
-                                value="1" hidden></input>
+                            <button id="decrease" class="increment" disabled>-</button>
+                            <input id="quantity-number" type="number" min="1" max="9" value="1" disabled/>
+                            <button id="increase" class="increment">+</button>
                         </div>
                     </div>
                     <div class="order">
-                        <a>Size Guide</a>
+                        <a><p>Size Guide</p></a>
                         <button class="primary" id="add-to-cart">Add to Cart</button>
                     </div>
                 </div>

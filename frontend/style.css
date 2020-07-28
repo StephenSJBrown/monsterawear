@@ -58,6 +58,10 @@ button:disabled {
   cursor: default;
 }
 
+button:disabled:hover {
+  opacity: 100%;
+}
+
 @media screen and (min-width: 480px) {
   h1 {
     font-size: 3em;
@@ -247,6 +251,7 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 0;
 }
 
 .order {
@@ -285,6 +290,7 @@ footer {
   height: 2em;
   font-size: 1.16em;
   color: #fff;
+  width: 6em;
 }
 
 #right-side {
@@ -297,6 +303,25 @@ footer {
 
 #cost-container {
   display: flex;
+}
+
+#quantity-number:disabled {
+  background-color: #fff;
+  border: none;
+  font-family: mr-eaves-modern, sans-serif;
+  font-style: normal;
+  font-weight: 300;
+  font-size: 1.5em;
+  color: #2c2c2c;
+  text-align: center;
+}
+
+#sold-out {
+  display: none;
+}
+
+#last-one {
+  display: none;
 }
 
 /* Cart Specific Formatting */
