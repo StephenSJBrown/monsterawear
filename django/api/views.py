@@ -3,6 +3,8 @@ from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 
 from .models import Stock, Order
 
+from manage import gateway
+
 # Create your views here.
 def index(request):
     return HttpResponse("Hey, you're at the api index. Call /[int] to get the show stock function, or call /create to get the ")
@@ -21,6 +23,10 @@ def show(request, stock_id):
         'l_quantity':stock.l_quantity,
         'xl_quantity':stock.xl_quantity
         })
+
+def generate(request):
+    return HttpResponse(gateway.client_token.generate())
+
 
 def create(request):
 
