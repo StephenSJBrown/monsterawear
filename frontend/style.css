@@ -149,14 +149,15 @@ footer {
 }
 
 .item-l {
-  width: auto;
-  max-width: 100%;
+  height: 25em;
+  width: 25em;
   margin-right: 1em;
 }
 
 @media screen and (max-width: 900px) {
   .item-l {
-    width: 45%;
+    height: 14em;
+    width: 14em;
   }
 }
 
@@ -351,7 +352,7 @@ footer {
 
 #item-info {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   margin-bottom: 2em;
 }
 

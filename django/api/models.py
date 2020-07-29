@@ -18,11 +18,13 @@ class Stock(models.Model):
         return self.item_name + ", " + self.colour
 
 class Order(models.Model):
-    full_name = models.CharField(max_length=200)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
+    address = models.CharField(max_length=1000)
+    postal_code = models.CharField(max_length=20)
     items = models.CharField(max_length=2000)
     total_item_value = models.DecimalField(max_digits=5, decimal_places=2)
-    address = models.CharField(max_length=1000)
     delivery_type = models.CharField(max_length=200)
     delivery_amount = models.DecimalField(max_digits=3, decimal_places=2)
     total_order_value = models.CharField(max_length=200)
