@@ -4,24 +4,24 @@ let large = 1;
 let xl = 1;
 
 // HIT THAT API
-// $.ajax({
-//   url: "http://localhost:8000/api/1",
-//   method: "GET",
-//   success: function (item) {
-//     $(`#item-name`)[0].innerText = item.item_name;
-//     $(`#item-colour`)[0].innerText = item.colour;
-//     $(`#item-price`)[0].innerText = `£${item.value}`;
-//     $(`#item-description`)[0].innerText = item.description;
-//     small = item.s_quantity;
-//     medium = item.m_quantity;
-//     large = item.l_quantity;
-//     xl = item.xl_quantity;
-//     console.log(`got data`);
-//   },
-//   error: function (error) {
-//     console.log(`Error: ${error}`);
-//   },
-// });
+$.ajax({
+  url: "http://localhost:8000/api/1",
+  method: "GET",
+  success: function (item) {
+    $(`#item-name`)[0].innerText = item.item_name;
+    $(`#item-colour`)[0].innerText = item.colour;
+    $(`#item-price`)[0].innerText = `£${item.value}`;
+    $(`#item-description`)[0].innerText = item.description;
+    small = item.s_quantity;
+    medium = item.m_quantity;
+    large = item.l_quantity;
+    xl = item.xl_quantity;
+    console.log(`got data`);
+  },
+  error: function (error) {
+    console.log(`Error: ${error}`);
+  },
+});
 
 console.log(sessionStorage);
 

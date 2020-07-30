@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Stock, Order
 
@@ -27,22 +28,25 @@ def show(request, stock_id):
 def generate(request):
     return HttpResponse(gateway.client_token.generate())
 
-
+@csrf_exempt
 def create(request):
+    if request.method == "POST":
+        print("issa post")
+        nonce = request.POST.get('nonce')
+        print("nonce", nonce)
+    # new_order = Order(
+    #     full_name=request.POST['name'],
+    #     email=request.POST['email'],
+    #     items=request.POST['items'],
+    #     total_item_value=request.POST['total_item_value'],
+    #     address=request.POST['address'],
+    #     delivery_type=request.POST['delivery_type'],
+    #     delivery_amount=request.POST['delivery_amount'],
+    #     total_order_value=request.POST['total_order_value']
+    # )
+    # new_order.save()
 
-    new_order = Order(
-        full_name=request.POST['name'],
-        email=request.POST['email'],
-        items=request.POST['items'],
-        total_item_value=request.POST['total_item_value'],
-        address=request.POST['address'],
-        delivery_type=request.POST['delivery_type'],
-        delivery_amount=request.POST['delivery_amount'],
-        total_order_value=request.POST['total_order_value']
-    )
-    new_order.save()
-
-    return HttpResponseRedirect("http://www.monsterawear.com/confirm", id=new_order.id)
+    return HttpResponse("http://localhost:5000/frontend/confirm.html")
 
 
 # def vote(request, question_id):
