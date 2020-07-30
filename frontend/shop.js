@@ -1,35 +1,15 @@
 let small = 0;
-let medium = 3;
-let large = 1;
-let xl = 1;
-
-// HIT THAT API
-$.ajax({
-  url: "http://localhost:8000/api/1",
-  method: "GET",
-  success: function (item) {
-    $(`#item-name`)[0].innerText = item.item_name;
-    $(`#item-colour`)[0].innerText = item.colour;
-    $(`#item-price`)[0].innerText = `£${item.value}`;
-    $(`#item-description`)[0].innerText = item.description;
-    small = item.s_quantity;
-    medium = item.m_quantity;
-    large = item.l_quantity;
-    xl = item.xl_quantity;
-    console.log(`got data`);
-  },
-  error: function (error) {
-    console.log(`Error: ${error}`);
-  },
-});
+let medium = 0;
+let large = 0;
+let xl = 0;
 
 console.log(sessionStorage);
 
 const adjustForCart = () => {
   let existingOrder = JSON.parse(sessionStorage.getItem("order"));
   if (existingOrder) {
-  const urlParams = new URLSearchParams(window.location.search);
-  let id = urlParams.get("item");
+    const urlParams = new URLSearchParams(window.location.search);
+    let id = urlParams.get("item");
     for (item of existingOrder) {
       if (item.id == id) {
         switch (item.size) {
@@ -120,12 +100,14 @@ const initSize = () => {
   }
 };
 
-if (parseInt(sessionStorage.getItem("item count")) > 0) {
-  $(`#cart-counter`)[0].innerText = sessionStorage.getItem("item count");
-  $(`#cart-counter`).show();
-} else {
-  sessionStorage.setItem("item count", 0);
-}
+const updateCart = () => {
+  if (parseInt(sessionStorage.getItem("item count")) > 0) {
+    $(`#cart-counter`)[0].innerText = sessionStorage.getItem("item count");
+    $(`#cart-counter`).show();
+  } else {
+    sessionStorage.setItem("item count", 0);
+  }
+};
 
 const showSize = (e) => {
   switch (e.target.value) {
@@ -235,12 +217,34 @@ const addToCart = () => {
   initSize();
 };
 
+// HIT THAT API
+$.ajax({
+  url: "http://localhost:8000/api/1",
+  method: "GET",
+  success: function (item) {
+    console.log(item);
+    $(`#item-name`)[0].innerText = item.item_name;
+    $(`#item-colour`)[0].innerText = item.colour;
+    $(`#item-price`)[0].innerText = `${item.value}`;
+    $(`#item-description`)[0].innerHTML = `<p>${item.description}</p>`;
+    small = item.s_quantity;
+    medium = item.m_quantity;
+    large = item.l_quantity;
+    xl = item.xl_quantity;
+    console.log(`got data`);
+    adjustForCart()
+    initSize()
+    updateCart()
+    console.log(small, medium, large, xl)
+  },
+  error: function (error) {
+    console.log(`Error: ${error}`);
+  },
+});
+
 $(`#size-selector`)[0].addEventListener("change", showSize);
 
 $("#add-to-cart")[0].addEventListener("click", addToCart);
 
 $("#increase")[0].addEventListener("click", increase);
 $("#decrease")[0].addEventListener("click", decrease);
-
-adjustForCart();
-initSize();

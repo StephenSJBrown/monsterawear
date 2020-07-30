@@ -76,6 +76,7 @@ const updateTotals = () => {
 updateTotals();
 
 const updateDelivery = (e) => {
+  console.log(e)
   $(`#delivery-value`)[0].innerText = e.target.value;
   sessionStorage.setItem("delivery cost", e.target.value);
   console.log("bruh")
@@ -85,7 +86,7 @@ const updateDelivery = (e) => {
 };
 
 $(`.radio`).each((i, radio) => {
-  radio.addEventListener("click", updateDelivery);
+  radio.addEventListener("change", updateDelivery);
 });
 
 $(`.input`).each((i, input) => {

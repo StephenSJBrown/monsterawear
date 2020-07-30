@@ -1,6 +1,7 @@
-const order = JSON.parse(sessionStorage.getItem("order"));
+const order = sessionStorage.getItem("order");
 const delivery = JSON.parse(sessionStorage.getItem("delivery info"))
 const deliveryCost = parseFloat(sessionStorage.getItem("delivery cost"));
+const deliveryType = sessionStorage.getItem("delivery type")
 const orderTotal = parseFloat(sessionStorage.getItem("order total"));
 const itemTotal = parseFloat(sessionStorage.getItem("item total"));
 const itemCount = parseInt(sessionStorage.getItem("item total"));
@@ -8,12 +9,13 @@ const itemCount = parseInt(sessionStorage.getItem("item total"));
 console.info(sessionStorage);
 console.log(delivery)
 console.log(order)
+console.log(deliveryType)
 
 if (order.length == 0) {
   window.location.href = "index.html";
 }
 
-order.forEach((item, i) => {
+JSON.parse(order).forEach((item, i) => {
   $(`#delivery-items`).append(
     `<div class="cart-item-small" id="item-${i}">
                 <img src="#" class="item-s" alt="#"/>
@@ -65,16 +67,20 @@ $.ajax({
                 email: delivery.email,
                 address: delivery.address,
                 postcode: delivery.postcode,
+                items: order,
                 itemCount: itemCount,
                 itemTotal: itemTotal,
                 deliveryCost: deliveryCost,
+                deliveryType: deliveryType,
                 orderTotal: orderTotal
                }
-            })
-              // .done(function( msg ) {
-              //   alert( "Data Saved: " + msg );
-              // });
-          });
+              })
+              .done(function( orderID ) {
+                  alert( "Data Saved: " + orderID );
+                  sessionStorage.setItem("order id", orderID)
+                  window.location.href = "confirm.html";
+                });
+              });
         });
       }
     );

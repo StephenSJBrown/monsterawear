@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import Stock, Order
 
 from manage import gateway
+import pdb
 
 # Create your views here.
 def index(request):
@@ -30,23 +31,36 @@ def generate(request):
 
 @csrf_exempt
 def create(request):
-    if request.method == "POST":
-        print("issa post")
-        nonce = request.POST.get('nonce')
-        print("nonce", nonce)
-    # new_order = Order(
-    #     full_name=request.POST['name'],
-    #     email=request.POST['email'],
-    #     items=request.POST['items'],
-    #     total_item_value=request.POST['total_item_value'],
-    #     address=request.POST['address'],
-    #     delivery_type=request.POST['delivery_type'],
-    #     delivery_amount=request.POST['delivery_amount'],
-    #     total_order_value=request.POST['total_order_value']
-    # )
-    # new_order.save()
+    print("issa post")
+    nonce = request.POST.get('nonce')
+    print("nonce", nonce)
+    result = gateway.transaction.sale(
+        {
+        "amount": request.POST.get('orderTotal'),
+        "payment_method_nonce": request.POST.get('nonce'),
+        "options": {
+        "submit_for_settlement": True
+        }
+    })
+    print(result)
+    new_order = Order(
+        first_name=request.POST.get('firstName'),
+        last_name=request.POST.get('lastName'),
+        email=request.POST.get('email'),
+        address=request.POST.get('address'),
+        postcode=request.POST.get('postcode'),
+        items=request.POST.get('items'),
+        item_count=request.POST.get('itemCount'),
+        total_item_value=request.POST.get('itemTotal'),
+        delivery_amount=request.POST.get('deliveryCost'),
+        delivery_type=request.POST.get('deliveryType'),
+        total_order_value=request.POST.get('orderTotal'),
+        transaction_id=result.transaction.id
+    )
+    new_order.save()
+    print(new_order.id)
 
-    return HttpResponse("http://localhost:5000/frontend/confirm.html")
+    return HttpResponse(new_order.id)
 
 
 # def vote(request, question_id):
