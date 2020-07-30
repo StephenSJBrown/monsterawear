@@ -4,7 +4,7 @@ import os
 import sys
 import braintree
 
-print("Loading environment variables from .env")
+# print("Loading environment variables from .env")
 from dotenv import load_dotenv
 load_dotenv()
 

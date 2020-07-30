@@ -1,9 +1,11 @@
 from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import Stock, Order
 
 from manage import gateway
+import pdb
 
 # Create your views here.
 def index(request):
@@ -27,22 +29,38 @@ def show(request, stock_id):
 def generate(request):
     return HttpResponse(gateway.client_token.generate())
 
-
+@csrf_exempt
 def create(request):
-
+    print("issa post")
+    nonce = request.POST.get('nonce')
+    print("nonce", nonce)
+    result = gateway.transaction.sale(
+        {
+        "amount": request.POST.get('orderTotal'),
+        "payment_method_nonce": request.POST.get('nonce'),
+        "options": {
+        "submit_for_settlement": True
+        }
+    })
+    print(result)
     new_order = Order(
-        full_name=request.POST['name'],
-        email=request.POST['email'],
-        items=request.POST['items'],
-        total_item_value=request.POST['total_item_value'],
-        address=request.POST['address'],
-        delivery_type=request.POST['delivery_type'],
-        delivery_amount=request.POST['delivery_amount'],
-        total_order_value=request.POST['total_order_value']
+        first_name=request.POST.get('firstName'),
+        last_name=request.POST.get('lastName'),
+        email=request.POST.get('email'),
+        address=request.POST.get('address'),
+        postcode=request.POST.get('postcode'),
+        items=request.POST.get('items'),
+        item_count=request.POST.get('itemCount'),
+        total_item_value=request.POST.get('itemTotal'),
+        delivery_amount=request.POST.get('deliveryCost'),
+        delivery_type=request.POST.get('deliveryType'),
+        total_order_value=request.POST.get('orderTotal'),
+        transaction_id=result.transaction.id
     )
     new_order.save()
+    print(new_order.id)
 
-    return HttpResponseRedirect("http://www.monsterawear.com/confirm", id=new_order.id)
+    return HttpResponse(new_order.id)
 
 
 # def vote(request, question_id):

@@ -1,15 +1,21 @@
-const order = JSON.parse(sessionStorage.getItem("order"));
+const order = sessionStorage.getItem("order");
+const delivery = JSON.parse(sessionStorage.getItem("delivery info"))
 const deliveryCost = parseFloat(sessionStorage.getItem("delivery cost"));
+const deliveryType = sessionStorage.getItem("delivery type")
 const orderTotal = parseFloat(sessionStorage.getItem("order total"));
 const itemTotal = parseFloat(sessionStorage.getItem("item total"));
+const itemCount = parseInt(sessionStorage.getItem("item total"));
 
 console.info(sessionStorage);
+console.log(delivery)
+console.log(order)
+console.log(deliveryType)
 
 if (order.length == 0) {
   window.location.href = "index.html";
 }
 
-order.forEach((item, i) => {
+JSON.parse(order).forEach((item, i) => {
   $(`#delivery-items`).append(
     `<div class="cart-item-small" id="item-${i}">
                 <img src="#" class="item-s" alt="#"/>
@@ -35,11 +41,11 @@ const updateTotals = () => {
 
 updateTotals();
 
+
 $.ajax({
   url: "http://localhost:8000/api/generate",
   method: "GET",
-  success: function (token) {
-    let clientToken = token;
+  success: function (clientToken) {
     braintree.dropin.create(
       {
         authorization: clientToken,
@@ -47,18 +53,41 @@ $.ajax({
       },
       function (createErr, instance) {
         button.addEventListener("click", function () {
-            console.log("submitted the token")
+          console.log("submitted the token");
           instance.requestPaymentMethod(function (err, payload) {
             // Submit payload.nonce to your server
-          });
+            console.log(payload);
+            $.ajax({
+              method: "POST",
+              url: "http://localhost:8000/api/create",
+              data: 
+              { nonce: payload.nonce,
+                firstName: delivery.first,
+                lastName: delivery.last,
+                email: delivery.email,
+                address: delivery.address,
+                postcode: delivery.postcode,
+                items: order,
+                itemCount: itemCount,
+                itemTotal: itemTotal,
+                deliveryCost: deliveryCost,
+                deliveryType: deliveryType,
+                orderTotal: orderTotal
+               }
+              })
+              .done(function( orderID ) {
+                  alert( "Data Saved: " + orderID );
+                  sessionStorage.setItem("order id", orderID)
+                  window.location.href = "confirm.html";
+                });
+              });
         });
       }
     );
-},
-error: function (error) {
+  },
+  error: function (error) {
     console.log(`Error: ${error}`);
-},
+  },
 });
 
 var button = document.querySelector("#complete-order");
-
